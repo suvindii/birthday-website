@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday Vish</title>
+  <!-- Google Fonts Merriweather -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Merriweather', Georgia, serif;
+      background: linear-gradient(135deg, #0d1117, #161b22);
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      position: relative;
+      overflow-y: hidden;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 3rem;
+      margin-bottom: 0.3em;
+      color: #58a6ff;
+      text-shadow: 0 0 10px #58a6ff88;
+      z-index: 10;
+      position: relative;
+    }
+
+    .profile-photo {
+      border-radius: 8px;
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      box-shadow: 0 0 25px #58a6ffbb;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 1.5em;
+      z-index: 10;
+      position: relative;
+    }
+    .profile-photo:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px #58a6ffdd;
+    }
+
+    .message {
+      max-width: 500px;
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 1.5;
+      color: #8b949e;
+      margin-bottom: 2rem;
+      z-index: 10;
+      position: relative;
+    }
+
+    .gallery-section {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 650px;
+      margin-bottom: 3rem;
+      z-index: 10;
+      position: relative;
+    }
+    .gallery-section img {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 0 15px #30363d;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .gallery-section img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #58a6ffbb;
+    }
+
+    #lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(13, 17, 23, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: zoom-out;
+    }
+    #lightbox.active {
+      display: flex;
+    }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 8px;
+      box-shadow: 0 0 40px #58a6ffdd;
+    }
+    #lightboxClose {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 2.5rem;
+      background: transparent;
+      border: none;
+      color: #58a6ff;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+      z-index: 10000;
+    }
+    #lightboxClose:hover {
+      color: #1f6feb;
+    }
+
+    /* Particle background canvas */
+    canvas#particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    footer {
+      color: #484f58;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      user-select: none;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* Dark red floating hearts container */
+    #hearts-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 1;
+      /* make sure no scrollbars from hearts overflow */
+      overflow-x: hidden;
+    }
+
+    /* Single heart style */
+    .heart {
+      position: absolute;
+      bottom: -30px;
+      width: 20px;
+      height: 18px;
+      background-color: #8b0000; /* dark cherry red */
+      clip-path: polygon(
+        50% 0%,
+        61% 7%,
+        68% 15%,
+        68% 25%,
+        62% 38%,
+        50% 50%,
+        38% 38%,
+        32% 25%,
+        32% 15%,
+        39% 7%
+      );
+      opacity: 0.9;
+      animation-name: floatUp;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      filter: drop-shadow(0 0 4px #660000);
+      will-change: transform, opacity;
+    }
+
+    /* Slightly bigger heart shape with shadow for variation */
+    .heart.large {
+      width: 28px;
+      height: 25px;
+      opacity: 1;
+      filter: drop-shadow(0 0 5px #550000);
+    }
+
+    /* Float hearts upwards from bottom to top */
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.9;
+      }
+      70% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* Elegant glowing vertical sidebars */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      width: 15px;
+      height: 100vh;
+      background: linear-gradient(180deg,
+        rgba(88,166,255,0.15) 0%,
+        rgba(88,166,255,0.5) 50%,
+        rgba(88,166,255,0.15) 100%);
+      box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.3);
+      filter: drop-shadow(0 0 10px rgba(88,166,255,0.5));
+      animation: glowPulse 3.5s ease-in-out infinite alternate;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+    }
+    .sidebar.left {
+      left: 0;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .sidebar.right {
+      right: 0;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        box-shadow: 0 0 12px 3px rgba(88, 166, 255, 0.3);
+        opacity: 0.85;
+      }
+      100% {
+        box-shadow: 0 0 20px 5px rgba(88, 166, 255, 0.6);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      .profile-photo {
+        width: 150px;
+        height: 150px;
+      }
+      .gallery-section img {
+        width: 100px;
+        height: 100px;
+      }
+      .message {
+        max-width: 90vw;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+
+  <h1>Happy Birthday Vish!</h1>
+
+  <img
+    src="vish 3.jpeg"
+    alt="Vishal smiling"
+    class="profile-photo"
+    tabindex="0"
+  />
+
+  <div class="message" role="main" aria-label="Birthday message">
+    Wishing you an amazing day filled with success, joy, and new adventures.<br />
+    Here’s to a fantastic year ahead, full of growth and unforgettable memories.
+  </div>
+
+  <section class="gallery-section" aria-label="Birthday photo gallery">
+    <img src="vish 2.jpeg" alt="Vishal with friends" tabindex="0" />
+    <img src="vish 22.jpeg" alt="Us together" tabindex="0" />
+    <img src="vish1.jpeg" alt="Vishal celebration" tabindex="0" />
+  </section>
+
+  <!-- Lightbox for gallery -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button id="lightboxClose" aria-label="Close image preview">&times;</button>
+    <img src="" alt="Expanded photo" />
+  </div>
+
+  <footer>&copy; 2025 Vish's Birthday Celebration</footer>
+
+  <div id="hearts-container" aria-hidden="true"></div>
+  <div class="sidebar left" aria-hidden="true"></div>
+  <div class="sidebar right" aria-hidden="true"></div>
+
+  <script>
+    // Gallery lightbox functionality
+    const galleryImages = document.querySelectorAll('.gallery-section img');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('img');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    galleryImages.forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImage.src = img.src;
+        lightboxImage.alt = img.alt;
+        lightbox.classList.add('active');
+      });
+      img.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          lightboxImage.src = img.src;
+          lightboxImage.alt = img.alt;
+          lightbox.classList.add('active');
+        }
+      });
+    });
+
+    lightboxClose.addEventListener('click', () => {
+      lightbox.classList.remove('active');
+      lightboxImage.src = '';
+      lightboxImage.alt = '';
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.classList.remove('active');
+        lightboxImage.src = '';
+        lightboxImage.alt = '';
+      }
+    });
+
+    // Floating hearts animation
+    const heartsContainer = document.getElementById('hearts-container');
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      if (Math.random() > 0.7) heart.classList.add('large');
+
+      // Random horizontal start position between 5% and 95%
+      heart.style.left = (Math.random() * 90 + 5) + 'vw';
+
+      // Random animation duration between 6 and 14 seconds
+      heart.style.animationDuration = (6 + Math.random() * 8) + 's';
+
+      // Random animation delay so hearts start at different times
+      heart.style.animationDelay = '-' + (Math.random() * 14) + 's';
+
+      heartsContainer.appendChild(heart);
+
+      // Remove heart after animation to keep DOM clean
+      setTimeout(() => {
+        heart.remove();
+      }, 14000);
+    }
+
+    // Create hearts more frequently to increase density
+    setInterval(createHeart, 200);
+
+    // Particle canvas placeholder (optional, no particles here but can be added)
+
+  </script>
+</body>
+</html>
